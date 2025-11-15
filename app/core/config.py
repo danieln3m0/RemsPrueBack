@@ -1,6 +1,7 @@
 from functools import lru_cache
 
-from pydantic import BaseSettings, Field
+from pydantic import Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -11,10 +12,11 @@ class Settings(BaseSettings):
     database_url: str = Field(default="sqlite:///./tableros.db", alias="DATABASE_URL")
     echo_sql: bool = Field(default=False, alias="ECHO_SQL")
 
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
-        case_sensitive = False
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        case_sensitive=False,
+    )
 
 
 @lru_cache

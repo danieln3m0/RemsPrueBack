@@ -24,19 +24,22 @@ class TableroNotFoundError(Exception):
 
 def create(session: Session, tablero_in: TableroElectricoCreate) -> TableroElectricoRead:
     tablero = create_tablero(session, tablero_in)
-    return TableroElectricoRead.model_validate(tablero)
+    return TableroElectricoRead.model_validate(tablero, from_attributes=True)
 
 
 def get_all(session: Session) -> List[TableroElectricoRead]:
     tableros = list_tableros(session)
-    return [TableroElectricoRead.model_validate(tablero) for tablero in tableros]
+    return [
+        TableroElectricoRead.model_validate(tablero, from_attributes=True)
+        for tablero in tableros
+    ]
 
 
 def get_by_id(session: Session, tablero_id: UUID) -> TableroElectricoRead:
     tablero = get_tablero(session, tablero_id)
     if tablero is None:
         raise TableroNotFoundError(f"Tablero {tablero_id} not found")
-    return TableroElectricoRead.model_validate(tablero)
+    return TableroElectricoRead.model_validate(tablero, from_attributes=True)
 
 
 def update(
@@ -48,7 +51,7 @@ def update(
     if tablero is None:
         raise TableroNotFoundError(f"Tablero {tablero_id} not found")
     updated = update_tablero(session, tablero, tablero_update)
-    return TableroElectricoRead.model_validate(updated)
+    return TableroElectricoRead.model_validate(updated, from_attributes=True)
 
 
 def delete(session: Session, tablero_id: UUID) -> None:

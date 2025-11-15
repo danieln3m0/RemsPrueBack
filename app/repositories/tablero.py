@@ -4,16 +4,13 @@ from uuid import UUID
 from sqlmodel import Session, select
 
 from app.models.tablero import TableroElectrico
-from app.schemas.tablero import (
-    TableroElectricoCreate,
-    TableroElectricoUpdate,
-)
+from app.schemas.tablero import TableroElectricoCreate, TableroElectricoUpdate
 
 
 def create_tablero(session: Session, tablero_in: TableroElectricoCreate) -> TableroElectrico:
     """Persist a new TableroElectrico entity."""
 
-    tablero = TableroElectrico.from_orm(tablero_in)
+    tablero = TableroElectrico(**tablero_in.model_dump())
     session.add(tablero)
     session.commit()
     session.refresh(tablero)
@@ -40,7 +37,7 @@ def update_tablero(
 ) -> TableroElectrico:
     """Update an existing tablero with the provided payload."""
 
-    update_data = tablero_update.dict(exclude_unset=True)
+    update_data = tablero_update.model_dump(exclude_unset=True)
     for key, value in update_data.items():
         setattr(tablero, key, value)
     session.add(tablero)

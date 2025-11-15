@@ -1,6 +1,7 @@
 import uuid
 from typing import Optional
 
+from pydantic import ConfigDict
 from sqlmodel import Field, SQLModel
 
 
@@ -20,6 +21,7 @@ class TableroElectricoCreate(TableroElectricoBase):
 
 class TableroElectricoRead(TableroElectricoBase):
     id: uuid.UUID
+    model_config = ConfigDict(from_attributes=True)
 
 
 class TableroElectricoUpdate(SQLModel):
