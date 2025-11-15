@@ -95,8 +95,8 @@ def get_tablero(
 @router.put(
     "/{tablero_id}",
     response_model=TableroElectricoRead,
-    summary="Actualizar un tablero eléctrico",
-    description="Actualiza los datos de un tablero existente. Solo los campos proporcionados serán actualizados.",
+    summary="Actualizar un tablero eléctrico (todos los campos)",
+    description="Actualiza todos los datos de un tablero existente. Todos los campos son requeridos, igual que en la creación.",
     response_description="El tablero eléctrico actualizado",
     responses={
         404: {
@@ -111,15 +111,13 @@ def get_tablero(
 )
 def update_tablero(
     tablero_id: UUID,
-    tablero_update: TableroElectricoUpdate,
+    tablero_update: TableroElectricoCreate,
     session: Session = Depends(get_session),
 ) -> TableroElectricoRead:
     """
-    Actualizar un tablero eléctrico existente.
+    Actualizar un tablero eléctrico existente (todos los campos requeridos).
     
     - **tablero_id**: ID único del tablero a actualizar (formato UUID)
-    
-    Puede actualizar cualquier combinación de los siguientes campos:
     - **nombre**: Nuevo nombre del tablero
     - **ubicacion**: Nueva ubicación
     - **marca**: Nueva marca
@@ -128,7 +126,7 @@ def update_tablero(
     - **ano_fabricacion**: Nuevo año de fabricación
     - **ano_instalacion**: Nuevo año de instalación
     
-    Los campos no incluidos en la petición permanecerán sin cambios.
+    Todos los campos deben ser enviados en la petición.
     """
     try:
         return update(session, tablero_id, tablero_update)
