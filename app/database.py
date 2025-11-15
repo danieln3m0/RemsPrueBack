@@ -1,13 +1,22 @@
 from sqlmodel import SQLModel, create_engine, Session
 from typing import Generator
+import os
 
-# URL de la base de datos SQLite
-DATABASE_URL = "sqlite:///./tableros.db"
+# URL de la base de datos
+# Para producción en Render, usa PostgreSQL; para desarrollo local, usa SQLite
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./tableros.db")
+
+# Render usa postgres:// pero SQLAlchemy requiere postgresql://
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
+# Configurar connect_args solo para SQLite
+connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
 
 # Crear el engine de la base de datos
 engine = create_engine(
     DATABASE_URL,
-    connect_args={"check_same_thread": False},  # Necesario para SQLite
+    connect_args=connect_args,
     echo=True  # Mostrar las queries SQL en la consola (útil para desarrollo)
 )
 
