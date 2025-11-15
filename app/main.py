@@ -1,4 +1,3 @@
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -7,13 +6,6 @@ from app.core.config import settings
 from app.core.database import init_db
 
 app = FastAPI(
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=["*"],
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
     title="API de Gestión de Tableros Eléctricos",
     description="""
     API RESTful para gestionar tableros eléctricos con operaciones CRUD completas.
@@ -38,22 +30,25 @@ app = FastAPI(
         "name": "Soporte API Tableros",
         "email": "soporte@tableros.com",
     },
-    license_info={
-        "name": "MIT",
-    },
+    license_info={"name": "MIT"},
 )
 
+# 👉 Agregar CORS correctamente
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.on_event("startup")
 def on_startup() -> None:
-    """Initialize database metadata when the service boots."""
-
     init_db()
-
 
 @app.get("/health", tags=["Health"])
 def health_check() -> dict:
     return {"status": "ok"}
 
-
+# 👉 Registrar router
 app.include_router(tablero_router)
