@@ -4,11 +4,17 @@ import os
 
 # URL de la base de datos
 # Para producción en Render, usa PostgreSQL; para desarrollo local, usa SQLite
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./tableros.db")
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-# Render usa postgres:// pero SQLAlchemy requiere postgresql://
-if DATABASE_URL.startswith("postgres://"):
-    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+# Si no hay DATABASE_URL, usar SQLite por defecto (desarrollo local)
+if not DATABASE_URL or DATABASE_URL.strip() == "":
+    DATABASE_URL = "sqlite:///./tableros.db"
+    print("⚠️ Usando SQLite en modo desarrollo")
+else:
+    # Render usa postgres:// pero SQLAlchemy requiere postgresql://
+    if DATABASE_URL.startswith("postgres://"):
+        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+    print(f"✅ Conectando a base de datos: {DATABASE_URL.split('@')[0]}@...")
 
 # Configurar connect_args solo para SQLite
 connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
@@ -17,7 +23,8 @@ connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite")
 engine = create_engine(
     DATABASE_URL,
     connect_args=connect_args,
-    echo=True  # Mostrar las queries SQL en la consola (útil para desarrollo)
+    echo=False,  # Cambiar a False en producción para evitar logs excesivos
+    pool_pre_ping=True  # Verificar conexiones antes de usar
 )
 
 
