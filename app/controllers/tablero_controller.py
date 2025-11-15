@@ -92,11 +92,11 @@ def get_tablero(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
 
 
-@router.put(
+@router.patch(
     "/{tablero_id}",
     response_model=TableroElectricoRead,
-    summary="Actualizar un tablero eléctrico (todos los campos)",
-    description="Actualiza todos los datos de un tablero existente. Todos los campos son requeridos, igual que en la creación.",
+    summary="Actualizar parcialmente un tablero eléctrico",
+    description="Actualiza uno o varios campos de un tablero existente. Solo los campos enviados serán modificados.",
     response_description="El tablero eléctrico actualizado",
     responses={
         404: {
@@ -111,22 +111,15 @@ def get_tablero(
 )
 def update_tablero(
     tablero_id: UUID,
-    tablero_update: TableroElectricoCreate,
+    tablero_update: TableroElectricoUpdate,
     session: Session = Depends(get_session),
 ) -> TableroElectricoRead:
     """
-    Actualizar un tablero eléctrico existente (todos los campos requeridos).
+    Actualizar parcialmente un tablero eléctrico existente.
     
     - **tablero_id**: ID único del tablero a actualizar (formato UUID)
-    - **nombre**: Nuevo nombre del tablero
-    - **ubicacion**: Nueva ubicación
-    - **marca**: Nueva marca
-    - **capacidad_amperios**: Nueva capacidad
-    - **estado**: Nuevo estado
-    - **ano_fabricacion**: Nuevo año de fabricación
-    - **ano_instalacion**: Nuevo año de instalación
-    
-    Todos los campos deben ser enviados en la petición.
+    - Cualquier campo del tablero puede ser enviado para actualizarse.
+    - Los campos no incluidos permanecerán sin cambios.
     """
     try:
         return update(session, tablero_id, tablero_update)
