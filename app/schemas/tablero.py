@@ -10,42 +10,35 @@ class TableroElectricoBase(SQLModel):
         min_length=3,
         max_length=255,
         description="Nombre descriptivo del tablero eléctrico",
-        examples=["Tablero Piso 1 - Ala Norte", "Panel Principal Edificio A"],
     )
     ubicacion: str = Field(
         min_length=3,
         max_length=255,
         description="Ubicación física del tablero",
-        examples=["Sala de máquinas, Sótano 1", "Oficina 203, Piso 2"],
     )
     marca: Optional[str] = Field(
         default=None,
         max_length=255,
         description="Marca del fabricante",
-        examples=["Schneider Electric", "ABB", "Siemens"],
     )
     capacidad_amperios: float = Field(
         gt=0,
         description="Capacidad en amperios del tablero",
-        examples=[100, 200, 400],
     )
     estado: str = Field(
         min_length=3,
         max_length=50,
         description="Estado operativo actual del tablero",
-        examples=["Operativo", "Mantenimiento", "Fuera de Servicio"],
     )
     ano_fabricacion: int = Field(
         ge=1900,
         le=2100,
         description="Año de fabricación del tablero",
-        examples=[2020, 2021, 2022],
     )
     ano_instalacion: int = Field(
         ge=1900,
         le=2100,
         description="Año de instalación del tablero",
-        examples=[2021, 2022, 2023],
     )
 
 
