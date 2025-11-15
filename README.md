@@ -46,6 +46,4 @@ Consultar `http://localhost:8000/docs` para probar mediante la documentación in
 4. Render creará una base de datos PostgreSQL gratis (`tableros-db`); la variable `DATABASE_URL` se inyectará automáticamente.
 5. Asegurarse de ejecutar migraciones/tareas adicionales si se agregan nuevas tablas en el futuro.
 
-## Pruebas
 
-Aún no se incluyen pruebas automatizadas. Se recomienda integrar `pytest` y pruebas de integración para los endpoints.
